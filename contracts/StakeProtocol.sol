@@ -15,7 +15,7 @@ contract StakeProtocol {
         uint256 amount;
         uint256 timestamp;
     }
-    mapping (address => StakeInfo) stakes;
+    mapping (address => StakeInfo) public stakes;
 
     event Stake(address user, uint256 amount);
     event Unstake(address user, uint256 amount);
@@ -52,6 +52,7 @@ contract StakeProtocol {
 
         StakeInfo storage _info = stakes[msg.sender];
         _info.amount = _info.amount.add(_amount);
+        _info.timestamp = block.timestamp;
 
         emit Stake(msg.sender, _amount);
     }
