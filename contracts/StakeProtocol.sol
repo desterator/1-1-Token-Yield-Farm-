@@ -15,8 +15,12 @@ contract StakeProtocol {
         uint256 amount;
         uint256 timestamp;
     }
-
     mapping (address => StakeInfo) stakes;
+
+    event Stake(address user, uint256 amount);
+    event Unstake(address user, uint256 amount);
+    event Claim(address user, uint256 amount);
+
 
     constructor(address _SafemoonCash, address _SmCGov) {
         SafemoonCash = IBEP20(_SafemoonCash);
@@ -35,6 +39,8 @@ contract StakeProtocol {
 
             StakeInfo storage info = stakes[msg.sender];
             info.timestamp = block.timestamp;
+
+            emit Claim(msg.sender, _stakerReward);
         }
     }
 
@@ -46,6 +52,8 @@ contract StakeProtocol {
 
         StakeInfo storage _info = stakes[msg.sender];
         _info.amount = _info.amount.add(_amount);
+
+        emit Stake(msg.sender, _amount);
     }
 
     function unstake(uint256 _amount) external {
@@ -56,5 +64,7 @@ contract StakeProtocol {
 
         StakeInfo storage _info = stakes[msg.sender];
         _info.amount = _info.amount.sub(_amount);
+
+        emit Unstake(msg.sender, _amount);
     }
 }
