@@ -68,4 +68,17 @@ contract StakeProtocol {
 
         emit Unstake(msg.sender, _amount);
     }
+
+    // this function only for case, when protocol doesn't have SmCGov
+    // to pay interest
+    function unstakeEmergency() external {
+        StakeInfo storage _info = stakes[msg.sender];
+        require(_info.amount != 0, "InvalidAmount");
+
+        SafemoonCash.transfer(msg.sender, _info.amount);
+        _info.amount = 0;
+        _info.timestamp = 0;
+
+        emit Unstake(msg.sender, _info.amount);
+    }
 }
